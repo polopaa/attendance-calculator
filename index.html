@@ -39,7 +39,7 @@
             id="attendanceInput"
             inputmode=""
             autocomplete="off"
-            placeholder="e.g. 34/42"
+            placeholder="e.g. 38/40"
           />
           <p class="hint" id="attendanceHint">
             Tip: use the format <span class="mono">attended/total</span>.
@@ -87,14 +87,14 @@
         <section class="card">
           <h2>Date Range</h2>
           <p class="hint">
-            Remaining classes are counted from the selected start date until
-            <span class="mono" id="rangeEndLabel">20 May</span>. Holiday:
+            Remaining classes are counted from the today's date until
+            <span class="mono" id="rangeEndLabel">20 May (Last Instructional Day)</span>. Holiday:
             <span class="mono" id="holidayLabel">1 May</span> (Friday) is excluded.
           </p>
           <div class="row">
             <div class="kpi">
               <div class="kpiLabel">From</div>
-              <input id="startDateInput" type="date" aria-label="Start date" />
+              <div class="kpiValue" id="startDateInput">—</div>
             </div>
             <div class="kpi">
               <div class="kpiLabel">To</div>

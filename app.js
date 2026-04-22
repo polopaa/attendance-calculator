@@ -615,8 +615,8 @@ function render() {
 
   // Date range labels
   if (els.startDateInput) {
-    els.startDateInput.value = toYmdLocal(r.startDate);
-    state.startDateYmd = els.startDateInput.value;
+    els.startDateInput.textContent = formatDateShort(r.startDate);
+    state.startDateYmd = toYmdLocal(r.startDate);
   }
   els.rangeEnd.textContent = formatDateShort(r.endDate);
   els.rangeEndLabel.textContent = r.endDate.toLocaleDateString(undefined, {
@@ -708,12 +708,7 @@ function attachEvents() {
     syncAfterSlotsChanged();
   });
 
-  if (els.startDateInput) {
-    els.startDateInput.addEventListener("input", (e) => {
-      state.startDateYmd = e.target.value;
-      render();
-    });
-  }
+  // startDateInput is now a display element, no event listener needed
 
   els.clearBtn.addEventListener("click", () => setAllSlots(false));
 
@@ -726,7 +721,7 @@ function attachEvents() {
     };
     els.attendanceInput.value = state.attendance;
     els.comboSelect.selectedIndex = 0;
-    if (els.startDateInput) els.startDateInput.value = state.startDateYmd;
+    if (els.startDateInput) els.startDateInput.textContent = formatDateShort(startOfTodayLocal());
     render();
   });
 }
@@ -741,8 +736,8 @@ function init() {
   els.skipInput.value = "0";
   els.comboSelect.selectedIndex = 0;
   if (els.startDateInput) {
-    els.startDateInput.value = state.startDateYmd || toYmdLocal(startOfTodayLocal());
-    state.startDateYmd = els.startDateInput.value;
+    els.startDateInput.textContent = formatDateShort(startOfTodayLocal());
+    state.startDateYmd = toYmdLocal(startOfTodayLocal());
   }
 
   attachEvents();

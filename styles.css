@@ -188,6 +188,18 @@ input:focus {
   box-shadow: 0 0 0 4px var(--ring);
 }
 
+input[type="range"] {
+  width: 100%;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
 .hint {
   margin: 10px 0 0;
   color: var(--muted);
