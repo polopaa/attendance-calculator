@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Attendance Calculator (Slots)</title>
+    <meta
+      name="description"
+      content="A responsive, slot-based attendance calculator to simulate future attendance."
+    />
+    <meta name="theme-color" content="#7c3aed" />
+    <meta property="og:title" content="Attendance Calculator" />
+    <meta property="og:description" content="Simulate your attendance using slot combinations and a timetable." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <div>
+          <h1>Attendance Calculator</h1>
+          <p class="subhead">Slot-based timetable simulator (client-side only)</p>
+        </div>
+        <button class="ghost" id="resetBtn" type="button" title="Reset all inputs">Reset</button>
+      </header>
+
+      <section class="grid" aria-label="Attendance calculator">
+        <section class="card">
+          <h2>Current Attendance</h2>
+          <label class="label" for="attendanceInput">Attended / Total</label>
+          <input
+            id="attendanceInput"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="e.g. 34/42"
+          />
+          <p class="hint" id="attendanceHint">
+            Tip: use the format <span class="mono">attended/total</span>.
+          </p>
+          <div class="row">
+            <div class="kpi">
+              <div class="kpiLabel">Current %</div>
+              <div class="kpiValue" id="currentPct">—</div>
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">Parsed</div>
+              <div class="kpiValue" id="parsedAttendance">0 / 0</div>
+            </div>
+          </div>
+          <p class="error" id="attendanceError" role="alert" hidden></p>
+        </section>
+
+        <section class="card">
+          <h2>Slot Combinations</h2>
+          <label class="label" for="comboSelect">Choose a combination</label>
+          <div class="row gapSm wrap">
+            <div class="grow">
+              <select id="comboSelect" class="comboSelect" aria-label="Slot combination selection"></select>
+            </div>
+            <div class="btnRow">
+              <button class="secondary" id="clearBtn" type="button">Clear</button>
+            </div>
+          </div>
+          <p class="hint">Pick from the dropdown to add it. Repeat to add more.</p>
+
+          <div class="slotsMeta">
+            <span id="selectedCount">0 selected</span>
+            <span class="dot">•</span>
+            <span id="weeklyFromSlots">Weekly classes: 0</span>
+          </div>
+
+          <div class="chips" id="selectedCombosList" aria-label="Selected combinations"></div>
+
+          <details class="details">
+            <summary>Show counted sessions (per week)</summary>
+            <div class="sessionList" id="sessionList"></div>
+          </details>
+        </section>
+
+        <section class="card">
+          <h2>Date Range</h2>
+          <p class="hint">
+            Remaining classes are counted from the selected start date until
+            <span class="mono" id="rangeEndLabel">20 May</span>. Holiday:
+            <span class="mono" id="holidayLabel">1 May</span> (Friday) is excluded.
+          </p>
+          <div class="row">
+            <div class="kpi">
+              <div class="kpiLabel">From</div>
+              <input id="startDateInput" type="date" aria-label="Start date" />
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">To</div>
+              <div class="kpiValue" id="rangeEnd">—</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="kpi">
+              <div class="kpiLabel">Remaining</div>
+              <div class="kpiValue" id="remainingClasses">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">Weekly</div>
+              <div class="kpiValue" id="weeklyClasses">0</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Planned Attendance</h2>
+          <p class="hint">
+            Choose how many of the remaining classes you plan to attend.
+          </p>
+          <p class="hint" id="plannedHelp"></p>
+
+          <div class="row gapSm wrap">
+            <div class="stepper grow">
+              <div class="stepperHead">
+                <div class="label">Attending (<span id="plannedMaxLabel">0</span> max)</div>
+              </div>
+              <div class="stepperBody">
+                <button class="stepBtn" id="attendMinus" type="button" aria-label="Decrease attending">
+                  −
+                </button>
+                <input id="attendInput" type="number" min="0" step="1" value="0" />
+                <button class="stepBtn" id="attendPlus" type="button" aria-label="Increase attending">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="stepper grow">
+              <div class="stepperHead">
+                <div class="label">Not attending</div>
+              </div>
+              <div class="stepperBody">
+                <button class="stepBtn" id="skipMinus" type="button" aria-label="Decrease not attending">
+                  −
+                </button>
+                <input id="skipInput" type="number" min="0" step="1" value="0" />
+                <button class="stepBtn" id="skipPlus" type="button" aria-label="Increase not attending">
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="kpi">
+              <div class="kpiLabel">Will skip</div>
+              <div class="kpiValue" id="plannedSkip">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpiLabel">Updated %</div>
+              <div class="kpiValue" id="updatedPct">—</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card wide" aria-live="polite">
+          <h2>Summary</h2>
+          <div class="summaryGrid">
+            <div class="summaryItem">
+              <div class="summaryLabel">New attended</div>
+              <div class="summaryValue" id="newAttended">0</div>
+            </div>
+            <div class="summaryItem">
+              <div class="summaryLabel">New total</div>
+              <div class="summaryValue" id="newTotal">0</div>
+            </div>
+            <div class="summaryItem">
+              <div class="summaryLabel">Remaining classes</div>
+              <div class="summaryValue" id="remainingBig">0</div>
+            </div>
+            <div class="summaryItem">
+              <div class="summaryLabel">Attend in future</div>
+              <div class="summaryValue" id="plannedBig">0</div>
+            </div>
+          </div>
+          <p class="note" id="dataNote">
+            Slot combinations and timetable sessions are hardcoded in <span class="mono">app.js</span>
+            (edit <span class="mono">SLOT_COMBINATIONS</span> and <span class="mono">TIMETABLE_EVENTS</span>).
+          </p>
+        </section>
+      </section>
+
+      <footer class="footer">
+        <p>
+          No backend • Instant updates • Handles invalid inputs safely
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
