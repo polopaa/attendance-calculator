@@ -1,0 +1,28 @@
+{
+  "name": "primary",
+  "version": "1.0.0",
+  "description": "This is a **client-side** attendance calculator that uses a **slot-based timetable** to estimate remaining classes and lets you simulate how attending/skipping future classes affects your final attendance %.",
+  "main": "app.js",
+  "scripts": {
+    "build:analytics": "esbuild speed-insights.js --bundle --minify --outfile=dist/speed-insights.min.js --format=iife",
+    "build": "npm run build:analytics",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polopaa/attendance-calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/polopaa/attendance-calculator/issues"
+  },
+  "homepage": "https://github.com/polopaa/attendance-calculator#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.0"
+  }
+}
