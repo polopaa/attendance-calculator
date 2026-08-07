@@ -22,6 +22,19 @@ python3 -m http.server 5173
 
 Then visit `http://localhost:5173`.
 
+## Development
+
+### Building Speed Insights
+
+The project includes Vercel Speed Insights for performance monitoring. To rebuild the Speed Insights bundle:
+
+```bash
+npm install
+npm run build
+```
+
+This will generate `dist/speed-insights.min.js` which is loaded by `index.html`.
+
 ## Customize the timetable
 
 Edit `app.js` and update:
